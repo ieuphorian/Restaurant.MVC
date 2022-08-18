@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Restaurant.Data.Categories>
+
+@{
+    ViewBag.Title = "Kategoriler";
+}
+
+<h2>Kategoriler</h2>
+
+<p>
+    @Html.ActionLink("Yeni Kategori Oluştur", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            Ad
+        </th>
+        <th>
+            Üst Kategori
+        </th>
+        <th>
+            Sira
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="kategori_@item.Id">
+            <td>
+                <img src="@Html.DisplayFor(modelItem => item.ImageUrl)" width="100" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParentCategory.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SortOrder)
+            </td>
+            <td>
+                @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
+                <a href="#" class="btnSil" data-id="@item.Id">Sil</a>
+            </td>
+        </tr>
+    }
+
+</table>
+@section scripts{
+    <script>
+        $(".btnSil").click(function () {
+            var id = $(this).attr("data-id");
+            if (confirm("Emin misiniz?")) {
+                $.ajax({
+                    url: '/admin/categories/delete/' + id,
+                    success: function (result) {
+                        if (result) {
+                            $("#kategori_" + id).remove();
+                            alert("Başarıyla silindi.");
+                        }
+                        else {
+                            alert("Bu kategoriye ait ürün veya alt kategoriler var. Silinemiyor.");
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+}

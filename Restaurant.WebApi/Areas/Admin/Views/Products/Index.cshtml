@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Restaurant.Data.Products>
+
+@{
+    ViewBag.Title = "Ürünler";
+}
+
+<h2>Ürünler</h2>
+
+<p>
+    @Html.ActionLink("Yeni Ürün Oluştur", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            Ad
+        </th>
+        <th>
+            Kategori
+        </th>
+        <th>
+            Fiyat
+        </th>
+        <th>
+            İndirimli Fiyat
+        </th>
+        <th>
+            Sira
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="urun_@item.Id">
+            <td>
+                <img src="@Html.DisplayFor(modelItem => item.ImageUrl)" width="100" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Categories.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)₺
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscountedPrice)₺
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SortOrder)
+            </td>
+            <td>
+                @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
+                <a href="#" class="btnSil" data-id="@item.Id">Sil</a>
+            </td>
+        </tr>
+    }
+
+</table>
+@section scripts{
+    <script>
+        $(".btnSil").click(function () {
+            var id = $(this).attr("data-id");
+            if (confirm("Emin misiniz?")) {
+                $.ajax({
+                    url: '/admin/products/delete/' + id,
+                    success: function (result) {
+                        if (result) {
+                            $("#urun_" + id).remove();
+                            alert("Başarıyla silindi.");
+                        }
+                        else {
+                            alert("Bu ürün silinemiyor.");
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+}
